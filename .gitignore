@@ -171,5 +171,5 @@ cython_debug/
 .pypirc
 
 data/raw_data/
-*.csv
-*.json
+# *.csv
+# *.json
