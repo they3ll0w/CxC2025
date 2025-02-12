@@ -256,4 +256,18 @@ ax.set_title("City Frequencies on a World Map", fontsize=16)
 # ax.legend()  # Commented out to remove the legend
 
 # Show the map
-plt.show()
+#plt.show()
+
+
+#POUR ROBERT
+def cityRadiusSize(list_of_cities): #where list_of_words is the list of unique cities
+    base_radius = 5  # Minimum size
+    scaling_factor = 3  # Adjust size growth
+
+    # Generate dictionary where key = city, value = circle radius
+    city_radius = {city: base_radius + (count * scaling_factor) for city, count in Counter(list_of_cities).items()}
+
+    # Print the result
+    print(city_radius)
+
+cityRadiusSize(list_of_words)
