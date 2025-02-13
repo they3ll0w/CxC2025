@@ -22,5 +22,5 @@ def userItems(columnName):
     print(items)
 
 
-userUniqueItem('region')
-userItems('region')
+userUniqueItem('city')
+#userItems('region')
