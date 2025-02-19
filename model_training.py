@@ -128,7 +128,6 @@ print(session_features.head())
 
 # Modeling using RNN
 
-
 session_events = data_sorted.groupby('session_id')['event_type'].apply(list).tolist()
 
 input_sequences = []
@@ -145,7 +144,7 @@ for seq in session_events:
 # Tokenize the event sequences.
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(input_sequences + target_events)
-vocab_size = len(tokenizer.word_index) + 1  # +1 for zero-padding token
+vocab_size = len(tokenizer.word_index) + 1
 
 # Convert input sequences and target events to integer sequences.
 input_sequences_int = tokenizer.texts_to_sequences(input_sequences)
@@ -153,6 +152,7 @@ target_sequences_int = np.array([tokenizer.texts_to_sequences([te])[0][0] for te
 
 # Pad the input sequences to have the same length.
 max_length = max(len(seq) for seq in input_sequences_int)
+print(max_length)
 input_sequences_padded = pad_sequences(input_sequences_int, maxlen=max_length, padding='pre')
 
 print(f"\nTotal training samples: {len(input_sequences_padded)}")
@@ -166,15 +166,24 @@ X_train, X_val, y_train, y_val = train_test_split(input_sequences_padded, target
 embedding_dim = 50
 model = Sequential([
     Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=max_length),
-    LSTM(100),
+    LSTM(50),
     Dense(vocab_size, activation='softmax')
 ])
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-history = model.fit(X_train, y_train, epochs=3, validation_data=(X_val, y_val))
+history = model.fit(X_train, y_train, epochs=1, validation_data=(X_val, y_val))
+
+# Testing the model
+val_loss, val_accuracy = model.evaluate(X_val, y_val, verbose=0)
+print(f"Validation Loss: {val_loss}")
+print(f"Validation Accuracy: {val_accuracy}")
+print(f"Validation Error (1 - accuracy): {1 - val_accuracy}")
+
 pickle.dump(model, open('model.pkl','wb'))
+with open('tokenizer.pkl', 'wb') as f:
+    pickle.dump(tokenizer, f)
 
 # Real Time Recommendations
 
