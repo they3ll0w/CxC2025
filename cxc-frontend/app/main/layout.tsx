@@ -12,7 +12,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <div className="h-lvh w-screen flex">
                 <AppSidebar />
                 <main className="h-full w-full relative overflow-hidden">
-                    <SidebarTrigger className="absolute z-10" />
+                    {/* <SidebarTrigger className="absolute z-10" /> */}
                     {children}
                 </main>
             </div>

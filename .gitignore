@@ -178,7 +178,7 @@ data/raw_data/
 # FRONTEND IGNORES
 
 # dependencies
-cxc-frontend/node_modules
+cxc-frontend/node_modules/
 cxc-frontend/.pnp
 cxc-frontend/.pnp.*
 cxc-frontend/.yarn/*
@@ -216,3 +216,6 @@ cxc-frontend/.vercel
 # typescript
 cxc-frontend/*.tsbuildinfo
 cxc-frontend/next-env.d.ts
+
+
+cxc-frontend/notes.txt
