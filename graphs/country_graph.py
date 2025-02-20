@@ -8,11 +8,9 @@ import matplotlib.colors as mcolors
 
 # Step 1: Get user country data
 countries = user_data['country']
-print("User countries:", countries)
 
 # Step 2: Count occurrences of each country
 country_counts = Counter(countries)
-print("Country counts:", country_counts)
 
 # Step 3: Load the world shapefile
 script_dir = os.path.dirname(__file__)
@@ -39,6 +37,6 @@ norm = mcolors.LogNorm(vmin=1, vmax=world["count"].max() + 1)
 world.plot(column="count", cmap="Blues", linewidth=0.8, edgecolor="black", norm = norm, legend=True, ax=ax)
 
 # Step 8: Add title and show the plot
-ax.set_title("Country Frequency Map", fontsize=14)
+ax.set_title("Federato users global distribution", fontsize=14)
 plt.show()
 
