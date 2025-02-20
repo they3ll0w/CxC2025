@@ -2,22 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pathlib import Path
-
-current_file_path = Path(__file__)
-current_folder_path = current_file_path.parent
-df = pd.read_csv(current_file_path.parent.resolve() / "data" / 'raw_data' / "new_amplitude_export_2025_chunk_1000000_1100000.csv")
-
-#print(df.head())
-
-user_data = df[['city', 'amplitude_id', 'country', 'device_family', 'os_version', 'platform', 'region']]
-user_data = user_data.groupby('amplitude_id', as_index=False).agg({
-    'city': 'first',
-    'country': 'first',
-    'device_family': 'first',
-    'os_version': 'first',
-    'platform': 'first',
-    'region': 'first'
-})
+from user_data_parsing import user_data
 
 
 list_of_words = []
@@ -35,8 +20,6 @@ pprint(mode(list_of_words))
 from collections import Counter
 counts = Counter(list_of_words)
 
-    # Find the top 5 most common strings
-    #print(counts.most_common(5))
 
 def mapUsers():
 
@@ -47,7 +30,7 @@ def mapUsers():
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
 
-    print(list_of_words)
+    # print(list_of_words)
 
     # Count the frequency of each city
     city_counts = Counter(list_of_words)
@@ -263,15 +246,15 @@ def mapUsers():
 if __name__ == '__main__':
     mapUsers()
 
-#POUR ROBERT
-def cityRadiusSize(list_of_cities): #where list_of_words is the list of unique cities
-    base_radius = 5  # Minimum size
-    scaling_factor = 3  # Adjust size growth
+# #POUR ROBERT
+# def cityRadiusSize(list_of_cities): #where list_of_words is the list of unique cities
+#     base_radius = 5  # Minimum size
+#     scaling_factor = 3  # Adjust size growth
 
     
-    city_radius = {city: base_radius + (count * scaling_factor) for city, count in Counter(list_of_cities).items()}
+#     city_radius = {city: base_radius + (count * scaling_factor) for city, count in Counter(list_of_cities).items()}
 
-    #
-    print(city_radius)
+#     #
+#     print(city_radius)
 
-cityRadiusSize(list_of_words)
+# cityRadiusSize(list_of_words)
