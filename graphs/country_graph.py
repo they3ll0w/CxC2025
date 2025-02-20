@@ -17,8 +17,6 @@ script_dir = os.path.dirname(__file__)
 shapefile_path = os.path.join(script_dir, "ne_110m_admin_0_countries", "ne_110m_admin_0_countries.shp")
 world = gpd.read_file(shapefile_path)
 
-# Step 4: Print available country names for debugging
-print("World country names:", world["NAME"].unique())
 
 # Step 5: Handle naming mismatches
 name_mapping = {
