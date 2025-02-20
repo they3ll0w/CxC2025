@@ -22,7 +22,7 @@ date_columns = ['client_event_time', 'client_upload_time', 'event_time',
 for col in date_columns:
     data[col] = pd.to_datetime(data[col], errors='coerce')
 
-# Parswe JSON field safely
+# Parse JSON field safely
 def parse_json(s):
     try:
         return json.loads(s.replace("'", '"'))
@@ -33,113 +33,32 @@ def parse_json(s):
 data['event_properties_parsed'] = data['event_properties'].apply(parse_json)
 data['user_properties_parsed'] = data['user_properties'].apply(parse_json)
 
-
 # Basic Overview of the Data
 print("Unique Users in this Chunk:", data['user_id'].nunique())
 print("Unique Sessions in this Chunk:", data['session_id'].nunique())
 
-# Distribution of the event types
-plt.figure(figsize=(8,4))
-sns.countplot(y='event_type', data=data, order=data['event_type'].value_counts().index)
-plt.title('Event Type Distribution')
-plt.xlabel('Count')
-plt.ylabel('Event Type')
-plt.tight_layout()
-plt.show()
-
 # Session Duration Distribution
 data_sorted = data.sort_values(by=['session_id', 'client_event_time'])
-session_durations = data_sorted.groupby('session_id')['client_event_time'].agg(['min', 'max'])
-session_durations['duration_seconds'] = (session_durations['max'] - session_durations['min']).dt.total_seconds()
-
-plt.figure(figsize=(8,4))
-sns.histplot(session_durations['duration_seconds'], bins=50)
-plt.title('Distribution of Session Durations (in seconds)')
-plt.xlabel('Session Duration (seconds)')
-plt.ylabel('Frequency')
-plt.tight_layout()
-plt.show()
-
-# Prediction using Markov Chains
-transition_counts = defaultdict(lambda: defaultdict(int))
-
-for session_id, group in data_sorted.groupby('session_id'):
-
-    events = group['event_type'].tolist()
-    for i in range(len(events) - 1):
-        current_event = events[i]
-        next_event = events[i+1]
-        transition_counts[current_event][next_event] += 1
-
-transition_prob = {}
-for current_event, next_events in transition_counts.items():
-    total = sum(next_events.values())
-    transition_prob[current_event] = {ne: count/total for ne, count in next_events.items()}
-
-# Function to predict the next action given the current event
-def predict_next_action(current_event, transition_prob_dict):
-    if current_event in transition_prob_dict:
-        return max(transition_prob_dict[current_event], key=transition_prob_dict[current_event].get)
-    else:
-        return None
-
-# Example of prediction
-current_event_example = 'application-window-opened'
-predicted_next = predict_next_action(current_event_example, transition_prob)
-print(f"Predicted next action for '{current_event_example}': {predicted_next}")
-
-# Use graph to represent the connections between events
-
-G = nx.DiGraph()
-
-for current, next_events in transition_prob.items():
-    for next_event, prob in next_events.items():
-        G.add_edge(current, next_event, weight=prob)
-
-plt.figure(figsize=(10, 8))
-pos = nx.spring_layout(G, k=0.5)
-edges = G.edges(data=True)
-weights = [edge[2]['weight']*5 for edge in edges]  # scale weights for visibility
-
-nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=1500, 
-        arrowsize=20, edge_color=weights, edge_cmap=plt.cm.Blues)
-plt.title("User Event Transition Graph")
-plt.show()
-
-
-# Use a model for prediction
-
-# Extract user-level features
-user_features = data.sort_values(by='client_event_time').groupby('user_id').agg(
-    total_events=('event_type', 'count'),
-    first_event=('client_event_time', 'min'),
-    last_event=('client_event_time', 'max')
-).reset_index()
-
-user_features['active_days'] = (user_features['last_event'] - user_features['first_event']).dt.days + 1
-user_features['events_per_day'] = user_features['total_events'] / user_features['active_days']
-print("User-level Features Sample:")
-print(user_features.head())
-
-session_features = data_sorted.groupby('session_id')['client_event_time'].agg(['min', 'max']).reset_index()
-session_features['session_duration_sec'] = (session_features['max'] - session_features['min']).dt.total_seconds()
-print("\nSession-level Features Sample:")
-print(session_features.head())
+data_sorted.to_csv('data/data_sorted.csv', index=False)
 
 # Modeling using RNN
-
+# %%
+data_sorted = pd.read_csv('data/data_sorted.csv')
 session_events = data_sorted.groupby('session_id')['event_type'].apply(list).tolist()
 
 input_sequences = []
 target_events = []
-min_sequence_length = 2
+min_sequence_length = 5
 
 for seq in session_events:
     if len(seq) < min_sequence_length:
         continue
     for i in range(1, len(seq)):
-        input_sequences.append(seq[:i])
+        input_sequences.append(seq[i:])
         target_events.append(seq[i])
+
+print(input_sequences[:5])
+print(target_events[:5])
 
 # Tokenize the event sequences.
 tokenizer = Tokenizer()
@@ -217,3 +136,70 @@ def real_time_recommendation(event_stream, model, tokenizer, max_length):
 sample_stream = ['application-window-opened', 'page-view', 'button-click']
 print("\nReal-Time Recommendation Simulation:")
 real_time_recommendation(sample_stream, model, tokenizer, max_length)
+
+
+# Prediction using Markov Chains
+# transition_counts = defaultdict(lambda: defaultdict(int))
+
+# for session_id, group in data_sorted.groupby('session_id'):
+
+#     events = group['event_type'].tolist()
+#     for i in range(len(events) - 1):
+#         current_event = events[i]
+#         next_event = events[i+1]
+#         transition_counts[current_event][next_event] += 1
+
+# transition_prob = {}
+# for current_event, next_events in transition_counts.items():
+#     total = sum(next_events.values())
+#     transition_prob[current_event] = {ne: count/total for ne, count in next_events.items()}
+
+# # Function to predict the next action given the current event
+# def predict_next_action(current_event, transition_prob_dict):
+#     if current_event in transition_prob_dict:
+#         return max(transition_prob_dict[current_event], key=transition_prob_dict[current_event].get)
+#     else:
+#         return None
+
+# # Example of prediction
+# current_event_example = 'application-window-opened'
+# predicted_next = predict_next_action(current_event_example, transition_prob)
+# print(f"Predicted next action for '{current_event_example}': {predicted_next}")
+
+# # Use graph to represent the connections between events
+
+# G = nx.DiGraph()
+
+# for current, next_events in transition_prob.items():
+#     for next_event, prob in next_events.items():
+#         G.add_edge(current, next_event, weight=prob)
+
+# plt.figure(figsize=(10, 8))
+# pos = nx.spring_layout(G, k=0.5)
+# edges = G.edges(data=True)
+# weights = [edge[2]['weight']*5 for edge in edges]  # scale weights for visibility
+
+# nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=1500, 
+#         arrowsize=20, edge_color=weights, edge_cmap=plt.cm.Blues)
+# plt.title("User Event Transition Graph")
+# plt.show()
+
+
+# Use a model for prediction
+
+# Extract user-level features
+# user_features = data.sort_values(by='client_event_time').groupby('user_id').agg(
+#     total_events=('event_type', 'count'),
+#     first_event=('client_event_time', 'min'),
+#     last_event=('client_event_time', 'max')
+# ).reset_index()
+
+# user_features['active_days'] = (user_features['last_event'] - user_features['first_event']).dt.days + 1
+# user_features['events_per_day'] = user_features['total_events'] / user_features['active_days']
+# print("User-level Features Sample:")
+# print(user_features.head())
+
+# session_features = data_sorted.groupby('session_id')['client_event_time'].agg(['min', 'max']).reset_index()
+# session_features['session_duration_sec'] = (session_features['max'] - session_features['min']).dt.total_seconds()
+# print("\nSession-level Features Sample:")
+# print(session_features.head())
