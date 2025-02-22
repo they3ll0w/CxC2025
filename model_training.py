@@ -99,7 +99,7 @@ model = Sequential([
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-history = model.fit(X_train, y_train, epochs=2, validation_data=(X_val, y_val))
+history = model.fit(X_train, y_train, epochs=30, validation_data=(X_val, y_val))
 
 # Testing the model
 val_loss, val_accuracy = model.evaluate(X_val, y_val, verbose=0)
