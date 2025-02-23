@@ -20,15 +20,17 @@ def predict_next_event(sequence):
     pred_int = np.argmax(pred_prob, axis=1)[0]
     
     max_event = ''
+    prob_event = 0
     prob_end_session = 0
 
     for event, index in tokenizer.word_index.items():
         if index == pred_int:
             max_event = event
+            prob_event = pred_prob[0][index]
         if event == 'end_session':
             prob_end_session = pred_prob[0][index]
 
-    return max_event, prob_end_session
+    return max_event, prob_event, prob_end_session
 
 app = flask.Flask(__name__)
 
@@ -50,9 +52,10 @@ def predict():
 
     if 'sequence' in params:
         sequence = params['sequence']
-        predicted_event, prob_end_session = predict_next_event(sequence)
+        predicted_event, prob_event, prob_end_session = predict_next_event(sequence)
         data = {
             'predicted_event': predicted_event,
+            'prob_event': prob_event,
             'prob_end_session': prob_end_session
         }
 
