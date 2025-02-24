@@ -548,7 +548,7 @@ const SidebarMenuButton = React.forwardRef<
       variant = "default",
       size = "default",
       tooltip,
-      className,
+      className = "rounded-lg h-6",
       ...props
     },
     ref

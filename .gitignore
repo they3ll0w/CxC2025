@@ -177,6 +177,9 @@ data/raw_data/
 
 # ----------------------------------------
 # FRONTEND IGNORES
+package.json
+pnpm-lock.yaml
+/node_modules/
 
 # dependencies
 cxc-frontend/node_modules/

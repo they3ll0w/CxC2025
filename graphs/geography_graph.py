@@ -34,6 +34,7 @@ def mapUsers():
 
     # Count the frequency of each city
     city_counts = Counter(list_of_words)
+    print(city_counts)
 
     # Predefined coordinates for cities
     city_coords = {

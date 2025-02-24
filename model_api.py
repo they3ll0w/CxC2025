@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
+from flask_cors import CORS
 
 # Load the model and the tokenizer
 model = load_model('model.h5')
@@ -34,7 +35,11 @@ def predict_next_event(sequence):
     return max_event, prob_event, prob_end_session
 
 app = flask.Flask(__name__)
+<<<<<<< HEAD
 
+=======
+CORS(app, supports_credentials=True)
+>>>>>>> frontend
 
 """
 To call the API, you can use the following code snippet:
@@ -56,6 +61,7 @@ def predict():
         predicted_event, prob_event, prob_end_session = predict_next_event(sequence)
         data = {
             'predicted_event': predicted_event,
+<<<<<<< HEAD
             'prob_event': prob_event,
             'prob_end_session': prob_end_session
         }
@@ -65,3 +71,15 @@ def predict():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port, debug=True)
+=======
+            'prob_event': str(prob_event),
+            'prob_end_session': str(prob_end_session)
+        }
+
+    response = flask.jsonify(data)
+
+    return response
+
+if __name__ == '__main__':
+    app.run(debug=True, port=4000)
+>>>>>>> frontend

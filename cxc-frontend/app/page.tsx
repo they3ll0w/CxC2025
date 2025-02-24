@@ -18,7 +18,7 @@ export default function Home() {
           A submission to the Federato RiskOps Platform Optimization Challenge <br /> CxC 2025
         </p>
         <div className="flex justify-center">
-          <Link href="/dashboard">
+          <Link href="/dashboard/user-analytics">
             <HoverBorderGradient
               containerClassName="rounded-full"
               as="button"
