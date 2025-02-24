@@ -1,5 +1,5 @@
 "use client"
-import { MessageSquare, Sparkle } from "lucide-react"
+import { MessageSquare, Sparkle, ChartNoAxesCombined, MapPinned } from "lucide-react"
 
 import {
     Sidebar,
@@ -15,11 +15,28 @@ import {
 
 import { APP_TITLE } from "@/lib/constants"
 import Link from "next/link"
-import Image from "next/image"
 import { ModeToggle } from "./mode-toggle"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 // Menu items.
 const items = [
+    {
+        title: "Dashboard",
+        items: [
+            {
+                title: "User analytics",
+                url: "/dashboard/user-analytics",
+                icon: ChartNoAxesCombined,
+            },
+            {
+                title: "User Heatmap",
+                url: "/dashboard/user-heatmap",
+                icon: MapPinned,
+            }
+        ]
+    },
+
     {
         title: "Models",
         items: [
@@ -37,7 +54,9 @@ const items = [
     },
 ]
 
+
 export function AppSidebar() {
+    const pathname = usePathname();
 
     return (
         <Sidebar className="bg-zinc-900 dark:border-zinc-700 border-zinc-300">
@@ -51,19 +70,20 @@ export function AppSidebar() {
             <SidebarContent>
                 {items.map((item) => (
                     <SidebarGroup key={item.title}>
-                        <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+                        <SidebarGroupLabel className="text-xxs"><b>{item.title}</b></SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {item.items.map((item) => (
-                                    <SidebarMenuItem key={item.title} className="text-xxs">
-                                        <SidebarMenuButton asChild>
-                                            <a href={item.url} >
+                                {item.items.map((item) => {
+                                    const isActive = pathname === item.url
+                                    return <SidebarMenuItem key={item.title} >
+                                        <SidebarMenuButton asChild className={cn("h-6", isActive && "dark:bg-zinc-800 bg-zinc-200")}>
+                                            <a href={item.url} className="px">
                                                 <item.icon className="text-purple-500" />
-                                                <span className="text-xs">{item.title}</span>
+                                                <span className="text-xxs">{item.title}</span>
                                             </a>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
-                                ))}
+                                })}
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>

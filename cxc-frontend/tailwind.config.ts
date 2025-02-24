@@ -68,13 +68,14 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
+			// borderRadius: {
+			// 	lg: 'var(--radius)',
+			// 	md: 'calc(var(--radius) - 2px)',
+			// 	sm: 'calc(var(--radius) - 4px)'
+			// },
 			fontSize: {
 				'xxs': '0.625rem',
+				'xxxs': '0.5rem'
 			}
 		}
 	},

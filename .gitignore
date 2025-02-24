@@ -24,6 +24,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+node_modules/
 MANIFEST
 
 # PyInstaller
@@ -176,6 +177,7 @@ data/raw_data/
 
 # ----------------------------------------
 # FRONTEND IGNORES
+/node_modules/
 
 # dependencies
 cxc-frontend/node_modules/

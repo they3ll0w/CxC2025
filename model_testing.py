@@ -1,9 +1,10 @@
 import pickle
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import load_model
 
 # Load the model and the tokenizer
-model = pickle.load(open('model.pkl', 'rb'))
+model = load_model('model.h5')
 with open('tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
 
@@ -23,7 +24,14 @@ def predict_next_event(sequence):
             return event
     return None
 
+sequence = ['application-window-opened', 'session_start', 'triaged-submission-list:my-book::view']
+
 # Example Usage
-sample_sequence = ['application-window-opened', 'session-start', 'account-login']
-predicted_event = predict_next_event(sample_sequence)
-print(f"Predicted next event: {predicted_event}")
+while(True):
+    print("Enter the sequence of events (type 'exit' to quit): ")
+    new_input = input()
+    if new_input == 'exit':
+        break
+    sequence.append(new_input)
+    predicted_event = predict_next_event(sequence)
+    print(f"Predicted next event: {predicted_event}")

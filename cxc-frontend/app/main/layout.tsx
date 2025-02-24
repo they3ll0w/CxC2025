@@ -11,7 +11,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <SidebarProvider>
             <div className="h-lvh w-screen flex">
                 <AppSidebar />
-                <main className="h-full w-full relative overflow-hidden">
+                <main className="h-full w-full relative overflow-auto">
                     {/* <SidebarTrigger className="absolute z-10" /> */}
                     {children}
                 </main>
