@@ -1,3 +1,4 @@
+import os
 import flask
 import json
 import pickle
@@ -62,4 +63,5 @@ def predict():
     return flask.jsonify(data)
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     app.run(debug=True)
