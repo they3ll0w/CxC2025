@@ -20,6 +20,7 @@ def predict_next_event(sequence):
     seq_int = pad_sequences(seq_int, maxlen=100, padding='pre')
     pred_prob = model.predict(seq_int, verbose=0)
     pred_int = np.argmax(pred_prob, axis=1)[0]
+    print(sequence)
     
     max_event = ''
     prob_event = 0
@@ -29,8 +30,10 @@ def predict_next_event(sequence):
         if index == pred_int:
             max_event = event
             prob_event = pred_prob[0][index]
-        if event == 'end_session':
+        if event == 'session_end':
             prob_end_session = pred_prob[0][index]
+    
+    print(max_event, prob_event, prob_end_session)
 
     return max_event, prob_event, prob_end_session
 
@@ -54,6 +57,9 @@ def predict():
 
     if 'sequence' in params:
         sequence = params['sequence']
+        # remove spaces from sequence
+        for i in range(len(sequence)):
+            sequence[i] = sequence[i].replace(" ", "")
         predicted_event, prob_event, prob_end_session = predict_next_event(sequence)
         data = {
             'predicted_event': predicted_event,

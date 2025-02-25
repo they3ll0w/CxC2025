@@ -87,7 +87,7 @@ export default function UserHeatmap() {
             fillOpacity: 1
         }))
 
-        chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+        chart.set("zoomControl", am5map.ZoomControl.new(root, {}))
 
         let bubbleSeries = chart.series.push(
             am5map.MapPointSeries.new(root, {
@@ -96,57 +96,7 @@ export default function UserHeatmap() {
                 latitudeField: 'latitude',
                 longitudeField: 'longitude',
             })
-        );
-
-        let circleTemplate: am5.Template<am5.Circle> = am5.Template.new({});
-
-        bubbleSeries.bullets.push(function (root, series, dataItem) {
-            let container = am5.Container.new(root, {});
-
-            let circle = container.children.push(
-                am5.Circle.new(root, {
-                    radius: 20,
-                    fillOpacity: 0.7,
-                    fill: am5.color(0xff0000),
-                    cursorOverStyle: "pointer",
-                    tooltipText: `{name}: [bold]{value}[/]`
-                }, circleTemplate)
-            );
-
-            let countryLabel = container.children.push(
-                am5.Label.new(root, {
-                    text: "{name}",
-                    paddingLeft: 5,
-                    populateText: true,
-                    fontWeight: "bold",
-                    fontSize: 13,
-                    centerY: am5.p50
-                })
-            );
-
-            circle.on("radius", function (radius: number) {
-                countryLabel.set("x", radius);
-            })
-
-            return am5.Bullet.new(root, {
-                sprite: container,
-                dynamic: true
-            });
-        });
-
-        bubbleSeries.bullets.push(function (root, series, dataItem) {
-            return am5.Bullet.new(root, {
-                sprite: am5.Label.new(root, {
-                    text: "{value.formatNumber('#.')}",
-                    fill: am5.color(0xffffff),
-                    populateText: true,
-                    centerX: am5.p50,
-                    centerY: am5.p50,
-                    textAlign: "center"
-                }),
-                dynamic: true
-            });
-        });
+        )
 
     }, [])
 
