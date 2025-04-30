@@ -1,15 +1,19 @@
 from flask import Flask, request, jsonify
 from groq import Groq
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
+
+load_dotenv()
 
 @app.route('/api/llm', methods=['POST'])
 def llm():
     data = request.get_json()
     prompt = data.get('input', '')
-    client = Groq(api_key='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')
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     completion = client.chat.completions.create(
         model="llama3-8b-8192",
         messages=[
